@@ -10,6 +10,8 @@ import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
+import { FormComponentComponent } from './form-component/form-component.component';
+import { RenderDirective } from './directives/render.directive';
 
 
 @NgModule({
@@ -19,7 +21,9 @@ import { ReactiveFormsModule } from '@angular/forms';
     SubmitApplicationComponent,
     ViewApplicationComponent,
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    FormComponentComponent,
+    RenderDirective
   ],
   imports: [
     BrowserModule,

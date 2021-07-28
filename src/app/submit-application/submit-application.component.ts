@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder} from "@angular/forms";
+import { componentFactoryName } from '@angular/compiler';
+import { Component, ComponentFactoryResolver, ComponentRef, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormBuilder, Validators, ValidatorFn, ValidationErrors, AbstractControl} from "@angular/forms";
+import { FormComponentComponent } from '../form-component/form-component.component';
+import { NodeConfigService } from '../services/node-config.service';
 import { SubmitService } from '../services/submit-service.service';
 
 
@@ -9,58 +12,31 @@ import { SubmitService } from '../services/submit-service.service';
   styleUrls: ['./submit-application.component.css']
 })
 export class SubmitApplicationComponent {
-  userData : {[id: string]:string};
-  constructor(private fb : FormBuilder, private ss :SubmitService) { 
-    this.userData = {"workExp":""};
+  componentRef : ComponentRef<FormComponentComponent> | null = null;
+
+  test = new NodeConfigService();  
+
+
+  constructor(private fb : FormBuilder, private ss :SubmitService, private valids: SubmitApplicationValidators,private entry:ViewContainerRef,private resolver:ComponentFactoryResolver) { 
+    this.test.type = "div";
+    this.test.attribs = {
+      "class" : "p-5",
+      "style" : "background-color : red;"
+    }
+
+    var m = new NodeConfigService();
+    m.type= "h1"
+    this.test.children = [
+      m
+    ]
+    
   }
 
-  applicationForm = this.fb.group({
-    firstName: [''],
-    addressLine1 : [''],
-    middleName:  [''],
-    addressLine2: [''],
-    lastName : [''],
-    city : [''],
-    dateOfBirth : [''],
-    state : [''],
-    maritalStatus : [''],
-    postalCode : [''],
-    ssn : [''],
-    homeNo : [''],
-    amount : [''],
-    officeNo : [''],
-    purpose : [''],
-    mobileNo : [''],
-    description : [''],
-    email : [''],
-    currEmployerName : [''],
-    workExpYear : [''],
-    workExpMonth : [''],
-    annualSalary : [''],
-    designation : [''],
-    empAddressLine1 : [''],
-    empAddressLine2 : [''],
-    empCity : [''],
-    empState : [''],
-    empPostalCode : ['']
-    
+  createComponent(message:string){
+    this.entry.clear()
+    const factory = this.resolver.resolveComponentFactory(FormComponentComponent)
+    this.componentRef = this.entry.createComponent(factory);
+    this.componentRef.instance.label = message;
 
-  });
-
-  onSubmit(){
-    Object.keys(this.applicationForm.controls).forEach(key => {
-      console.log(key)
-      if(key!="workExpYear" && key!="workExpMonth"){
-        this.userData[key] = this.applicationForm.get(key)?.value
-      }else{
-        this.userData.workExp =  this.userData.workExp+this.applicationForm.get(key)?.value;
-      }
-    });
-
-
-    this.ss.register(this.userData).subscribe(
-      response => console.log("Success!"+response),
-      error => console.error("Error!",error)
-    )
   }
 }
